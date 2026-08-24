@@ -1,0 +1,170 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.body {
+  flex: 1;
+  padding: 24px 20px 0;
+}
+
+.headline {
+  margin: 8px 0 6px;
+  font-size: 24px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.sub {
+  margin: 0 0 20px;
+  color: var(--text-weak);
+  font-size: 15px;
+}
+
+.presets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.preset {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-weak);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.preset.on {
+  background: #fff;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.preview,
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--bg-weak);
+  overflow: hidden;
+}
+
+.preview {
+  min-height: 220px;
+}
+
+.preview img,
+.stage img {
+  display: block;
+  max-width: 100%;
+  /* 사진을 화면에 맞춰 축소만 하고, 레터박스를 만들지 않습니다.
+     D3의 좌표 계산이 이미지 요소의 rect를 그대로 쓰기 때문입니다. */
+  height: auto;
+}
+
+.empty {
+  color: var(--text-weak);
+  font-size: 15px;
+}
+
+.message {
+  margin: 12px 2px 0;
+  color: #f04452;
+  font-size: 14px;
+}
+
+.meta {
+  margin: 10px 2px 0;
+  color: var(--text-weak);
+  font-size: 13px;
+}
+
+.cta {
+  padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+.primary,
+.secondary {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.primary:disabled {
+  background: #c9d3df;
+}
+
+.spaced {
+  margin-top: 8px;
+}
+
+.secondary {
+  background: var(--bg-weak);
+  color: var(--text);
+}
+
+.devnote {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 6px 20px calc(6px + env(safe-area-inset-bottom));
+  background: #fff3cd;
+  color: #7a5b00;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 사진 요소에 딱 맞는 상자. 뱃지 좌표(%)의 기준이 되므로 여백이 있으면 안 됩니다. */
+.pinArea {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  touch-action: manipulation;
+}
+
+.badge {
+  position: absolute;
+  /* left/top이 뱃지의 중심이 되도록 당깁니다. */
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
