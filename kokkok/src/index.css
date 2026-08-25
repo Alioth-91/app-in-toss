@@ -1,4 +1,4 @@
-/* 앱인토스는 다크 모드를 지원하지 않습니다. 라이트 기준으로만 작성하세요. (CLAUDE.md 4번) */
+/* 앱인토스는 다크 모드를 지원하지 않습니다. 라이트 기준으로만 작성하세요.  */
 :root {
   --text: #191f28;
   --text-weak: #8b95a1;
@@ -6,8 +6,13 @@
   --bg-weak: #f2f4f6;
   --primary: #3182f6;
 
-  font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic',
-    system-ui, sans-serif;
+  font:
+    16px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    system-ui,
+    sans-serif;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
