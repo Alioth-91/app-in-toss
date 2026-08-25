@@ -10,7 +10,7 @@ import {
   File,
   FetchAlbumPhotosPermissionError,
 } from "@apps-in-toss/web-framework";
-import type { Photo } from "./types";
+import type { Photo } from "../types";
 
 /** 브라우저에서 devtools mock으로 돌고 있는지. 실기기 배포본에서는 실제 배포 ID가 들어옵니다. */
 export const isMockEnv = Environment.deploymentId === "mock-deployment-id";

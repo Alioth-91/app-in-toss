@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Home from "./Home";
-import Tagging from "./Tagging";
-import { isMockEnv, pickPhoto, saveImage } from "./bridge";
-import { composeImage } from "./compose";
+import Home from "./screens/Home";
+import Tagging from "./screens/Tagging";
+import { isMockEnv, pickPhoto, saveImage } from "./lib/bridge";
+import { composeImage } from "./lib/compose";
 import type { Photo, PresetKey, Screen, Tag } from "./types";
 import "./App.css";
 
@@ -41,14 +41,32 @@ export default function App() {
     }
   }
 
-  function handleAddTag(x: number, y: number) {
-    setTags((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), x, y, label: "" },
-    ]);
-  }
+  const handleAddTag = (x: number, y: number) => {
+    setTags((prev) => [...prev, { id: crypto.randomUUID(), x, y, label: "" }]);
+  };
 
-  async function handleSave() {
+  /** x, y는 Tagging에서 이미 0~1로 정규화해 넘어옵니다. */
+  const handleMoveTag = (id: string, x: number, y: number) => {
+    setTags((prev) =>
+      prev.map((tag) => (tag.id === id ? { ...tag, x, y } : tag)),
+    );
+  };
+
+  const handleLabelTag = (id: string, label: string) => {
+    setTags((prev) =>
+      prev.map((tag) => (tag.id === id ? { ...tag, label } : tag)),
+    );
+  };
+
+  /**
+   * 번호는 배열 순서로 매기므로, 가운데를 지우면 뒤 번호가 당겨집니다.
+   * 하단 설명 목록과 1:1로 맞아야 하기 때문에, id로 찾아서 지웁니다.
+   */
+  const handleDeleteTag = (id: string) => {
+    setTags((prev) => prev.filter((tag) => tag.id !== id));
+  };
+
+  const handleSave = async () => {
     if (photo == null) {
       return;
     }
@@ -67,7 +85,7 @@ export default function App() {
     } finally {
       setSaving(false);
     }
-  }
+  };
 
   return (
     <>
@@ -87,11 +105,13 @@ export default function App() {
           onBack={() => setScreen("home")}
           tags={tags}
           onAddTag={handleAddTag}
+          onMoveTag={handleMoveTag}
+          onLabelTag={handleLabelTag}
+          onDeleteTag={handleDeleteTag}
           onSave={handleSave}
           saving={saving}
         />
       )}
-
 
       {isMockEnv && (
         <p className="devnote">

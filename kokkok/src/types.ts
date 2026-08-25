@@ -17,15 +17,20 @@ export type Tag = {
 
 export type PresetKey = 'condition' | 'nameplate';
 
-export const PRESETS: Record<PresetKey, { title: string; badgeColor: string; placeholder: string }> = {
+export const PRESETS: Record<
+  PresetKey,
+  { title: string; badgeColor: string; placeholder: string; sheetTitle: string }
+> = {
   condition: {
     title: '물건 상태 표시',
     badgeColor: '#FF6B00',
     placeholder: '예: 오른쪽 아래 살짝 긁힘',
+    sheetTitle: '어떤 흠집인가요?',
   },
   nameplate: {
     title: '그냥 이름표',
     badgeColor: '#3182F6',
     placeholder: '예: 이 물건 이름은?',
+    sheetTitle: '뭐라고 적을까요?',
   },
 };
