@@ -166,5 +166,78 @@
   font-weight: 700;
   line-height: 1;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  pointer-events: none;
+  /* 끌 수 있어야 하므로 이벤트를 받습니다. 대신 뱃지의 pointerdown에서
+     stopPropagation을 해야 사진 영역의 탭 판정과 겹치지 않습니다. */
+  pointer-events: auto;
+  /* 뱃지를 끄는 동안 브라우저가 스크롤로 가로채지 않게 합니다. */
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  cursor: grab;
+  transition: transform 160ms ease-out;
+}
+
+/* 잡혔다는 걸 알 수 있게 살짝 키웁니다. */
+.badge:active {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+/* 보이는 크기는 28px로 두고 터치 영역만 44px로 넓힙니다.
+   28px는 손가락으로 잡기에 작습니다. */
+.badge::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
+/* 사진 아래 설명 목록. 번호는 사진 위 뱃지와 1:1로 대응합니다. */
+.tagList {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tagRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tagList li + li .tagRow {
+  border-top: 1px solid var(--bg-weak);
+}
+
+.rowBadge {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rowLabel {
+  flex: 1;
+  font-size: 15px;
+  color: var(--text);
+  /* 한 줄 설명이라 넘치면 자릅니다. 여러 줄이 되면 목록이 길어져 사진이 밀립니다. */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rowLabel.empty {
+  color: var(--text-weak);
 }
