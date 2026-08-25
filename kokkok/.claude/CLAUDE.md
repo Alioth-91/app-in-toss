@@ -32,6 +32,7 @@ Vite 8 + React 18 + TypeScript
 @apps-in-toss/web-framework  ^3.0.5   # SDK
 @apps-in-toss/devtools       ^3.0.5   # vite 플러그인
 @toss/tds-mobile             ^2.5.1   # 토스 디자인 시스템 (권장 / 모달은 필수)
+@toss/tds-mobile-ait         ^2.5.1   # TDS 색 변수 공급. 없으면 모든 배경이 투명해짐 (D-016)
 상태: useState (필요시 zustand)
 이미지 합성: canvas API (라이브러리 없이)
 서버 없음 / DB 없음 / 로그인 없음
@@ -53,6 +54,25 @@ Vite 8 + React 18 + TypeScript
 다만 비게임 출시 체크리스트에 "사용자 안내나 확인이 필요한 경우 TDS 모달을 사용해요"가 있으므로
 **다이얼로그·바텀시트는 TDS를 씁니다.**
 
+### TDS는 패키지 2개가 한 쌍입니다
+
+`@toss/tds-mobile`은 색을 `var(--adaptiveBackground)` 같은 CSS 변수로 **참조만 하고 정의하지 않습니다.**
+정의는 `@toss/tds-colors`에 있고, 그걸 끌고 오는 게 `@toss/tds-mobile-ait`입니다.
+이게 없으면 컴포넌트가 렌더는 되는데 **배경이 전부 투명**하게 나옵니다. 크롬·실기기 양쪽에서 똑같습니다.
+
+앱 최상단은 이 Provider 하나로 끝냅니다. `TDSMobileProvider`나 `ThemeProvider`를 직접 쓰지 마세요 —
+`userAgent`와 브랜드 색(`apps-in-toss.config.ts`의 `brand.primaryColor`)까지 이 안에서 처리합니다.
+
+```tsx
+import { TDSMobileAITProvider } from "@toss/tds-mobile-ait";
+
+<TDSMobileAITProvider>
+  <App />
+</TDSMobileAITProvider>;
+```
+
+**: 설치만 해두고 쓰지 않는 의존성은 검증되지 않습니다.** TDS는 D0에 설치됐지만, 어느 파일에서도 import되지 않아서, 처음 쓰는 순간까지 결함이 드러날 수 없었습니다.
+
 ---
 
 ## 3. SDK 3.x — 버전이 중요합니다
@@ -72,8 +92,12 @@ Vite 8 + React 18 + TypeScript
 
 ```bash
 grep -rn "찾을것" node_modules/@apps-in-toss/web-framework --include="*.d.ts"
-npx tsc --noEmit
+npx tsc -b        # ⚠️ `--noEmit`이 아닙니다
 ```
+
+> **`npx tsc --noEmit`은 아무것도 검사하지 않습니다.** 루트 `tsconfig.json`이 `files: []`에
+> 참조만 걸어둔 껍데기라 조용히 통과합니다. 실제로 검사하려면 `npx tsc -b`를 쓰세요
+> (`npm run build`가 쓰는 것). 선언조차 없는 변수를 쓴 코드가 `--noEmit`을 통과한 사례가 있습니다.
 
 문서나 커뮤니티 글보다 `node_modules`의 `.d.ts`가 정확합니다.
 API 이름을 추측해서 쓰지 말고, 반드시 타입에서 확인한 이름을 쓰세요.
@@ -103,7 +127,7 @@ WebView는 https origin에서 그 파일을 못 읽어 `<img>` 로드가 실패�
 
 **2. `base64: true`를 줘도 `data:` 접두사가 안 붙는다.**
 `/9j/4AAQSkZJRg...` 형태의 순수 base64로 옵니다. 직접 `data:image/jpeg;base64,`를 붙여야 합니다.
-`bridge.ts`의 `toDataUri()`가 이 처리를 합니다.
+`lib/bridge.ts`의 `toDataUri()`가 이 처리를 합니다.
 
 **3. 취소하면 빈 배열이다.** 에러가 아닙니다 (실기기 확인). 단 브라우저 mock은 에러를 던집니다.
 
@@ -224,6 +248,22 @@ type Tag = {
 
 기준 해상도는 **375 × 812 하나**입니다. 반응형 브레이크포인트를 만들지 마세요.
 
+### 파일 구조 (2026-08-25 정리, D-019)
+
+```
+src/
+├── App.tsx              화면 전환 + 태그 상태(단일 소유자)
+├── types.ts  main.tsx  App.css  index.css
+├── screens/     Home.tsx  Tagging.tsx
+├── components/  TagList.tsx  LabelSheet.tsx
+└── lib/         usePinGestures.ts  compose.ts  bridge.ts
+```
+
+- **태그 상태는 `App.tsx`만 가집니다.** 화면은 props로 받고 콜백으로 올려보냅니다. 상태를 아래로 내리지 마세요 — 합성·저장이 `App`에 있습니다.
+- **`lib/usePinGestures.ts`는 손대기 전에 파일 맨 위 주석을 읽으세요.** 8px 문턱, 포인터 캡처, 시트를 `pointerup`이 아니라 `click`에서 여는 이유가 전부 실기기 버그에서 나온 규칙입니다.
+- **`lib/bridge.ts`만 토스 SDK를 부릅니다.** 다른 파일에서 `@apps-in-toss/web-framework`를 import하지 마세요. 이 경계가 있어야 나머지를 브라우저에서 확인할 수 있습니다.
+- 폴더를 더 쪼개지 마세요. 파일 12개에 3단계 이상은 과설계입니다.
+
 ---
 
 ## 8. 만들지 않는 것 (제안하지도 말 것)
@@ -308,9 +348,10 @@ type Tag = {
 ## 12. 작업 방식
 
 - **범위를 늘리는 제안을 하지 마세요.** "이것도 있으면 좋겠는데요"는 v2 후보로만 기록합니다.
-- 아키텍처를 미리 일반화하지 마세요. 추상화 레이어, 커스텀 훅 남발, 폴더 구조 과설계 전부 불필요합니다.
+- 아키텍처를 **미리** 일반화하지 마세요. 추상화 레이어, 커스텀 훅 남발, 폴더 구조 과설계 전부 불필요합니다.
+  단 이미 커진 파일을 쪼개는 건 다릅니다 — 7번의 파일 구조가 그렇게 나왔습니다(D-019).
+  기준은 "나중에 필요할 것 같아서"가 아니라 **"지금 한 파일이 성격이 다른 일을 여러 개 하고 있어서"**입니다.
 - 판단이 필요한 결정을 내렸으면 `DECISIONS.md`에 **상황 / 대안 / 선택 / 대가** 4줄로 남기세요.
-  이 기록이 이 프로젝트의 부산물 중 가장 값어치 있는 결과물입니다.
 - 앱인토스 관련해서 **확신이 없으면 추측하지 말고 "모르겠다"고 말하고 확인 방법을 제시하세요.**
   잘못된 API 이름으로 만든 코드는 디버깅에 몇 시간이 듭니다.
 
