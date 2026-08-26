@@ -57,14 +57,8 @@
   font-size: 14px;
 }
 
-.meta {
-  margin: 10px 2px 0;
-  color: var(--text-weak);
-  font-size: 13px;
-}
-
 .cta {
-  padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+  padding: 12px 20px env(safe-area-inset-bottom);
 }
 
 .primary,
@@ -95,20 +89,6 @@
 .secondary {
   background: var(--bg-weak);
   color: var(--text);
-}
-
-.devnote {
-  margin: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
-  text-align: left;
-  font-size: 11px;
-  line-height: 1.45;
-  padding: 6px 20px calc(6px + env(safe-area-inset-bottom));
-  background: #fff3cd;
-  color: #7a5b00;
-  font-size: 12px;
-  text-align: center;
 }
 
 /* 사진 요소에 딱 맞는 상자. 뱃지 좌표(%)의 기준이 되므로 여백이 있으면 안 됩니다. */

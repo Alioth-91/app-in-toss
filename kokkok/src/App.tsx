@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Home from "./screens/Home";
 import Tagging from "./screens/Tagging";
-import { isMockEnv, pickPhoto, saveImage } from "./lib/bridge";
+import { pickPhoto, saveImage } from "./lib/bridge";
 import { composeImage } from "./lib/compose";
 import type { Photo, Screen, Tag } from "./types";
 import "./App.css";
@@ -114,12 +114,6 @@ export default function App() {
           onSave={handleSave}
           saving={saving}
         />
-      )}
-
-      {isMockEnv && (
-        <p className="devnote">
-          브라우저 mock 모드 — 실제 SDK 동작은 실기기에서 확인하세요
-        </p>
       )}
     </>
   );

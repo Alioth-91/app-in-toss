@@ -118,10 +118,6 @@ export default function Tagging({
         </div>
 
         <TagList tags={tags} onSelect={openSheet} />
-
-        <p className="meta">
-          원본 크기 {photo.width} × {photo.height}
-        </p>
       </div>
 
       <div className="cta">
