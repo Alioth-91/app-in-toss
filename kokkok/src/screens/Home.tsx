@@ -1,26 +1,21 @@
 import { useState } from "react";
 import DiscardDialog from "../components/DiscardDialog";
-import type { Photo, PresetKey } from "../types";
-import { PRESETS } from "../types";
+import type { Photo } from "../types";
 
 type Props = {
-  preset: PresetKey;
   loading: boolean;
   message: string | null;
   photo: Photo | null;
   tagCount: number;
-  onChangePreset: (preset: PresetKey) => void;
   onPick: () => void;
   onResume: () => void;
 };
 
 export default function Home({
-  preset,
   loading,
   message,
   photo,
   tagCount,
-  onChangePreset,
   onPick,
   onResume,
 }: Props) {
@@ -42,29 +37,6 @@ export default function Home({
         <h1 className="headline">사진에 콕 찍어서 알려주세요</h1>
 
         <p className="sub">흠집이 있는 곳을 사진 위에 바로 표시할 수 있어요</p>
-
-        <div className="presets">
-          {(Object.keys(PRESETS) as PresetKey[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              className={`preset ${preset === key ? "on" : ""}`}
-              style={
-                preset === key
-                  ? { borderColor: PRESETS[key].badgeColor }
-                  : undefined
-              }
-              onClick={() => onChangePreset(key)}
-            >
-              <span
-                className="dot"
-                style={{ background: PRESETS[key].badgeColor }}
-              />
-
-              {PRESETS[key].title}
-            </button>
-          ))}
-        </div>
 
         <div className="preview">
           {photo == null ? (

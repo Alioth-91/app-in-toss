@@ -23,37 +23,6 @@
   font-size: 15px;
 }
 
-.presets {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.preset {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border: 1.5px solid transparent;
-  border-radius: 12px;
-  background: var(--bg-weak);
-  color: var(--text);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.preset.on {
-  background: #fff;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
 .preview,
 .stage {
   display: flex;

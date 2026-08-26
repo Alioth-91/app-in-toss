@@ -3,14 +3,13 @@ import Home from "./screens/Home";
 import Tagging from "./screens/Tagging";
 import { isMockEnv, pickPhoto, saveImage } from "./lib/bridge";
 import { composeImage } from "./lib/compose";
-import type { Photo, PresetKey, Screen, Tag } from "./types";
+import type { Photo, Screen, Tag } from "./types";
 import "./App.css";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [photo, setPhoto] = useState<Photo | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [preset, setPreset] = useState<PresetKey>("condition");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -80,7 +79,7 @@ export default function App() {
     setMessage(null);
 
     try {
-      const dataUrl = await composeImage(photo, tags, preset);
+      const dataUrl = await composeImage(photo, tags);
       // 공유 시트를 띄우고 바로 반환합니다. 사용자가 저장했는지 취소했는지 알 수 없으므로
       // 성공 문구를 띄우지 않습니다. (DECISIONS D-014)
       await saveImage(dataUrl, `kokkok-${Date.now()}.jpg`);
@@ -96,19 +95,16 @@ export default function App() {
     <>
       {screen === "home" || photo == null ? (
         <Home
-          preset={preset}
           loading={loading}
           message={message}
           photo={photo}
           tagCount={tags.length}
-          onChangePreset={setPreset}
           onPick={handlePick}
           onResume={handleResume}
         />
       ) : (
         <Tagging
           photo={photo}
-          preset={preset}
           onBack={() => setScreen("home")}
           tags={tags}
           onAddTag={handleAddTag}

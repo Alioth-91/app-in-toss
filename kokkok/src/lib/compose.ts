@@ -3,8 +3,8 @@
  *
  * 사진 + 번호 뱃지 + 하단 설명 목록을 한 장으로 만듭니다.
  */
-import { PRESETS } from "../types";
-import type { Photo, PresetKey, Tag } from "../types";
+import { BADGE_COLOR } from "../types";
+import type { Photo, Tag } from "../types";
 
 const FONT_STACK = `-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif`;
 
@@ -45,11 +45,7 @@ function fitOneLine(
  * 사진이 주 콘텐츠라 PNG는 파일이 3~5배 커지고, 메모리 제약이 있는 WebView에서 불리합니다.
  * 하단 설명 텍스트가 뭉개져 보이면 그때 PNG로 바꿉니다.
  */
-export async function composeImage(
-  photo: Photo,
-  tags: Tag[],
-  preset: PresetKey,
-): Promise<string> {
+export async function composeImage(photo: Photo, tags: Tag[]): Promise<string> {
   const img = await loadImage(photo.dataUri);
 
   // 설명이 없는 표시는 목록에서 뺍니다. 빈 줄만 남으면 저장물이 지저분해집니다.
@@ -77,8 +73,6 @@ export async function composeImage(
 
   ctx.drawImage(img, 0, 0, width, photo.height);
 
-  const badgeColor = PRESETS[preset].badgeColor;
-
   // 사진 위 번호 뱃지
   const radius = width * 0.035;
 
@@ -89,7 +83,7 @@ export async function composeImage(
 
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.fillStyle = badgeColor;
+    ctx.fillStyle = BADGE_COLOR;
     ctx.fill();
     ctx.lineWidth = radius * 0.14;
     ctx.strokeStyle = "#fff";
@@ -119,7 +113,7 @@ export async function composeImage(
 
     ctx.beginPath();
     ctx.arc(pad + rowBadgeRadius, cy, rowBadgeRadius, 0, Math.PI * 2);
-    ctx.fillStyle = badgeColor;
+    ctx.fillStyle = BADGE_COLOR;
     ctx.fill();
 
     ctx.fillStyle = "#fff";

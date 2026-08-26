@@ -3,12 +3,11 @@ import LabelSheet from "../components/LabelSheet";
 import TagList from "../components/TagList";
 import { useBackEvent } from "../lib/useBackEvent";
 import { usePinGestures } from "../lib/usePinGestures";
-import { PRESETS } from "../types";
-import type { Photo, PresetKey, Tag } from "../types";
+import { BADGE_COLOR } from "../types";
+import type { Photo, Tag } from "../types";
 
 type Props = {
   photo: Photo;
-  preset: PresetKey;
   tags: Tag[];
   onAddTag: (x: number, y: number) => void;
   onMoveTag: (id: string, x: number, y: number) => void;
@@ -21,7 +20,6 @@ type Props = {
 
 export default function Tagging({
   photo,
-  preset,
   tags,
   onAddTag,
   onMoveTag,
@@ -109,7 +107,7 @@ export default function Tagging({
                 style={{
                   left: `${tag.x * 100}%`,
                   top: `${tag.y * 100}%`,
-                  background: PRESETS[preset].badgeColor,
+                  background: BADGE_COLOR,
                 }}
                 {...gestures.badge(tag.id)}
               >
@@ -119,7 +117,7 @@ export default function Tagging({
           </div>
         </div>
 
-        <TagList tags={tags} preset={preset} onSelect={openSheet} />
+        <TagList tags={tags} onSelect={openSheet} />
 
         <p className="meta">
           원본 크기 {photo.width} × {photo.height}
@@ -139,7 +137,6 @@ export default function Tagging({
 
       <LabelSheet
         open={editingId != null}
-        preset={preset}
         draft={draft}
         onDraftChange={setDraft}
         onClose={closeSheet}

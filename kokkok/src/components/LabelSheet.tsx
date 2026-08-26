@@ -1,10 +1,7 @@
 import { BottomSheet, Button, TextField } from "@toss/tds-mobile";
-import { PRESETS } from "../types";
-import type { PresetKey } from "../types";
 
 type Props = {
   open: boolean;
-  preset: PresetKey;
   draft: string;
   onDraftChange: (value: string) => void;
   onClose: () => void;
@@ -23,7 +20,6 @@ type Props = {
  */
 export default function LabelSheet({
   open,
-  preset,
   draft,
   onDraftChange,
   onClose,
@@ -32,7 +28,7 @@ export default function LabelSheet({
 }: Props) {
   return (
     <BottomSheet open={open} onDimmerClick={onClose} hasTextField>
-      <BottomSheet.Header>{PRESETS[preset].sheetTitle}</BottomSheet.Header>
+      <BottomSheet.Header>어떤 흠집인가요?</BottomSheet.Header>
       <BottomSheet.HeaderDescription>
         한 줄로 짧게 써요
       </BottomSheet.HeaderDescription>
@@ -40,7 +36,7 @@ export default function LabelSheet({
       <TextField
         variant="box"
         value={draft}
-        placeholder={PRESETS[preset].placeholder}
+        placeholder="예: 오른쪽 아래 살짝 긁힘"
         onChange={(event) => onDraftChange(event.target.value)}
       />
 
