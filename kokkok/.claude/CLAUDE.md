@@ -134,6 +134,36 @@ WebView는 https origin에서 그 파일을 못 읽어 `<img>` 로드가 실패�
 **브라우저 mock은 항상 정상적인 data URI를 주기 때문에 1·2번이 전혀 드러나지 않습니다.**
 앨범·저장 관련 코드는 반드시 실기기에서 확인하세요.
 
+### 뒤로가기를 구독하면 앱이 안 꺼집니다 (2026-08-26, D-022)
+
+```ts
+import { graniteEvent } from "@apps-in-toss/web-framework";
+
+const unsubscribe = graniteEvent.addEventListener("backEvent", {
+  onEvent: () => { /* 여기서 처리 */ },
+  onError: (error) => console.error(error),
+});
+```
+
+**구독하는 순간 토스 기본 뒤로가기(미니앱 종료)가 차단됩니다.** 공식 문서에
+"기본 뒤로가기는 차단돼요"라고 적혀 있습니다. 구독을 해제하면 되살아납니다.
+
+그래서 **뒤로가기를 가로채야 하는 화면에서만** 구독하세요. 앱 전역에서 한 번 걸어두면
+홈 화면에서도 종료가 막혀 **"최초 화면에서 뒤로가기를 누르면 미니앱이 종료됨"
+심사 항목에 걸립니다** (4번 참고). `lib/useBackEvent.ts`가 이 규칙을 담고 있고,
+`Tagging`만 이 훅을 씁니다.
+
+브라우저 mock에서는 `window`에 `__ait:backEvent`를 쏘면 그대로 재현됩니다.
+
+```js
+window.dispatchEvent(new Event("__ait:backEvent"));
+```
+
+**TDS의 `closeOnBackEvent`는 이 프로젝트에서 동작하지 않습니다.** 그 옵션은 프로바이더가
+주입하는 backEvent 객체에 의존하는데 `@toss/tds-mobile-ait`에는 그 코드가 없습니다.
+`AlertDialog`·`ConfirmDialog`에만 있는 옵션이고, `BottomSheet`에는 아예 없습니다.
+켜도 아무 일이 일어나지 않으니 뒤로가기는 직접 배선하세요.
+
 ---
 
 ## 4. 절대 하면 안 되는 것 (심사 반려 사유)
@@ -230,6 +260,8 @@ type Tag = {
   y: number; // 0~1
   label: string; // 한 줄 설명
 };
+
+const BADGE_COLOR = "#FF6B00"; // 화면과 합성 이미지가 같은 값을 씁니다
 ```
 
 이 이상 복잡해지면 범위가 넘친 것입니다.
@@ -255,13 +287,13 @@ src/
 ├── App.tsx              화면 전환 + 태그 상태(단일 소유자)
 ├── types.ts  main.tsx  App.css  index.css
 ├── screens/     Home.tsx  Tagging.tsx
-├── components/  TagList.tsx  LabelSheet.tsx
-└── lib/         usePinGestures.ts  compose.ts  bridge.ts
+├── components/  TagList.tsx  LabelSheet.tsx  DiscardDialog.tsx
+└── lib/         usePinGestures.ts  useBackEvent.ts  compose.ts  bridge.ts
 ```
 
 - **태그 상태는 `App.tsx`만 가집니다.** 화면은 props로 받고 콜백으로 올려보냅니다. 상태를 아래로 내리지 마세요 — 합성·저장이 `App`에 있습니다.
 - **`lib/usePinGestures.ts`는 손대기 전에 파일 맨 위 주석을 읽으세요.** 8px 문턱, 포인터 캡처, 시트를 `pointerup`이 아니라 `click`에서 여는 이유가 전부 실기기 버그에서 나온 규칙입니다.
-- **`lib/bridge.ts`만 토스 SDK를 부릅니다.** 다른 파일에서 `@apps-in-toss/web-framework`를 import하지 마세요. 이 경계가 있어야 나머지를 브라우저에서 확인할 수 있습니다.
+- **토스 SDK는 `lib/` 안에서만 부릅니다.** `screens/`·`components/`·`App.tsx`에서 `@apps-in-toss/web-framework`를 import하지 마세요. 지금 SDK를 쓰는 파일은 `lib/bridge.ts`(앨범·저장)와 `lib/useBackEvent.ts`(뒤로가기) 둘뿐입니다. 이 경계가 있어야 나머지를 브라우저에서 확인할 수 있습니다.
 - 폴더를 더 쪼개지 마세요. 파일 12개에 3단계 이상은 과설계입니다.
 
 ---
