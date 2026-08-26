@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import LabelSheet from "../components/LabelSheet";
 import TagList from "../components/TagList";
+import { useBackEvent } from "../lib/useBackEvent";
 import { usePinGestures } from "../lib/usePinGestures";
 import { PRESETS } from "../types";
 import type { Photo, PresetKey, Tag } from "../types";
@@ -63,6 +64,24 @@ export default function Tagging({
     closeSheet();
   }
 
+  /**
+   * 토스 뒤로가기는 시트가 열려 있으면 시트만 닫고, 아니면 홈으로 나갑니다.
+   *
+   * 나갈 때 확인창을 띄우지 않는 이유: 사진과 표시가 그대로 보관되고 홈의
+   * '이어서 표시하기'로 되돌아올 수 있어 **아무것도 잃지 않기 때문**입니다.
+   * 잃을 게 없는데 막아서면 "뒤로가기 이탈 방지" 다크패턴입니다. (DECISIONS D-024)
+   */
+  const handleBackEvent = useCallback(() => {
+    if (editingId != null) {
+      setEditingId(null);
+      setDraft("");
+      return;
+    }
+    onBack();
+  }, [editingId, onBack]);
+
+  useBackEvent(handleBackEvent);
+
   const gestures = usePinGestures({
     imgRef,
     onAddTag,
@@ -115,9 +134,6 @@ export default function Tagging({
           disabled={saving}
         >
           {saving ? "이미지를 만들고 있어요" : "이미지 내보내기"}
-        </button>
-        <button type="button" className="secondary spaced" onClick={onBack}>
-          사진 다시 고르기
         </button>
       </div>
 

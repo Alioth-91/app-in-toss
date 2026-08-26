@@ -66,6 +66,11 @@ export default function App() {
     setTags((prev) => prev.filter((tag) => tag.id !== id));
   };
 
+  /** 뒤로가기로 홈에 나갔다가 다시 들어오는 길. 사진과 표시를 그대로 이어서 씁니다. */
+  const handleResume = () => {
+    setScreen("tagging");
+  };
+
   const handleSave = async () => {
     if (photo == null) {
       return;
@@ -95,8 +100,10 @@ export default function App() {
           loading={loading}
           message={message}
           photo={photo}
+          tagCount={tags.length}
           onChangePreset={setPreset}
           onPick={handlePick}
+          onResume={handleResume}
         />
       ) : (
         <Tagging
