@@ -1,11 +1,20 @@
 import { useState } from "react";
 
 import { ParticipantForm } from "./components/ParticipantForm";
+import { SettlementFormProvider } from "./components/SettlementFormProvider";
 import type { Participant } from "./features/settlement/settlement";
 
 type AppScreen = "welcome" | "participants" | "participant-complete";
 
 export default function App() {
+  return (
+    <SettlementFormProvider>
+      <AppContent />
+    </SettlementFormProvider>
+  );
+}
+
+function AppContent() {
   const [screen, setScreen] = useState<AppScreen>("welcome");
   const [participants, setParticipants] = useState<Participant[]>([]);
 

@@ -1,23 +1,17 @@
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
+import { createBlankParticipant } from "../features/settlement/createBlankParticipant";
 import type { Participant } from "../features/settlement/settlement";
 import { validateParticipants } from "../features/settlement/validateParticipants";
+import type { SettlementFormValues } from "./SettlementFormProvider";
 
 const MIN_PARTICIPANTS = 2;
 const MAX_PARTICIPANTS = 10;
 
-type ParticipantFormValues = {
-  participants: Participant[];
-};
-
 type ParticipantFormProps = {
   onComplete: (participants: Participant[]) => void;
 };
-
-function createBlankParticipant(): Participant {
-  return { id: crypto.randomUUID(), name: "" };
-}
 
 export function ParticipantForm({ onComplete }: ParticipantFormProps) {
   const [formError, setFormError] = useState("");
@@ -27,13 +21,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<ParticipantFormValues>({
-    defaultValues: {
-      participants: [createBlankParticipant(), createBlankParticipant()],
-    },
-    mode: "onBlur",
-    reValidateMode: "onBlur",
-  });
+  } = useFormContext<SettlementFormValues>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "participants",
@@ -49,7 +37,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
     return issue?.message ?? true;
   };
 
-  const submit = (values: ParticipantFormValues) => {
+  const submit = (values: SettlementFormValues) => {
     const participants = values.participants.map((participant) => ({
       ...participant,
       name: participant.name.trim(),
@@ -125,7 +113,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
         disabled={fields.length >= MAX_PARTICIPANTS}
         onClick={() => {
           setFormError("");
-          append(createBlankParticipant());
+          append(createBlankParticipant(crypto.randomUUID()));
         }}
       >
         참여자 추가
