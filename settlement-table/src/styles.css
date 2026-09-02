@@ -81,3 +81,30 @@ h1 {
   outline: 3px solid rgb(49 130 246 / 35%);
   outline-offset: 3px;
 }
+
+.participant-form,
+.participant-row {
+  display: grid;
+  gap: 12px;
+}
+
+.participant-row input {
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid #d1d6db;
+  border-radius: 12px;
+}
+
+.secondary-button {
+  justify-self: start;
+  border: 0;
+  color: #6b7684;
+  background: transparent;
+}
+
+.form-error,
+.field-error {
+  margin: 0;
+  color: #d14343;
+  font-size: 13px;
+}
