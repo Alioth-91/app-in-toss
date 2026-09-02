@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { createBlankParticipant } from "../features/settlement/createBlankParticipant";
-import type { Participant } from "../features/settlement/settlement";
 import { validateParticipants } from "../features/settlement/validateParticipants";
 import type { SettlementFormValues } from "./SettlementFormProvider";
 
@@ -10,7 +9,7 @@ const MIN_PARTICIPANTS = 2;
 const MAX_PARTICIPANTS = 10;
 
 type ParticipantFormProps = {
-  onComplete: (participants: Participant[]) => void;
+  onComplete: () => void;
 };
 
 export function ParticipantForm({ onComplete }: ParticipantFormProps) {
@@ -55,7 +54,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
 
     setFormError("");
     setValue("participants", participants, { shouldValidate: false });
-    onComplete(participants);
+    onComplete();
   };
 
   return (

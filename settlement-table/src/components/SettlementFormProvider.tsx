@@ -1,12 +1,17 @@
 import type { ReactNode } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
+import {
+  createBlankExpenseDraft,
+  type ExpenseDraft,
+} from "../features/settlement/createBlankExpense";
 import { createBlankParticipant } from "../features/settlement/createBlankParticipant";
 import type { Expense, Participant } from "../features/settlement/settlement";
 
 export type SettlementFormValues = {
   participants: Participant[];
   expenses: Expense[];
+  expenseDraft: ExpenseDraft;
 };
 
 export function SettlementFormProvider({ children }: { children: ReactNode }) {
@@ -17,6 +22,7 @@ export function SettlementFormProvider({ children }: { children: ReactNode }) {
         createBlankParticipant(crypto.randomUUID()),
       ],
       expenses: [],
+      expenseDraft: createBlankExpenseDraft([]),
     },
     mode: "onBlur",
     reValidateMode: "onBlur",

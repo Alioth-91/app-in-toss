@@ -108,3 +108,56 @@ h1 {
   color: #d14343;
   font-size: 13px;
 }
+
+.expense-stage,
+.expense-form {
+  display: grid;
+  gap: 12px;
+}
+
+.empty-copy,
+.expense-total {
+  margin: 0;
+  color: #6b7684;
+}
+
+.expense-total {
+  font-weight: 700;
+}
+
+.expense-list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f7f8fa;
+}
+
+.expense-form input,
+.expense-form select {
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid #d1d6db;
+  border-radius: 12px;
+}
+
+.expense-form fieldset {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+}
+
+.expense-form fieldset label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
