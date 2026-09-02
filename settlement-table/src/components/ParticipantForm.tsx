@@ -20,6 +20,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
     getValues,
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useFormContext<SettlementFormValues>();
   const { fields, append, remove } = useFieldArray({
@@ -53,6 +54,7 @@ export function ParticipantForm({ onComplete }: ParticipantFormProps) {
     }
 
     setFormError("");
+    setValue("participants", participants, { shouldValidate: false });
     onComplete(participants);
   };
 

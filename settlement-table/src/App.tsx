@@ -4,7 +4,7 @@ import { ParticipantForm } from "./components/ParticipantForm";
 import { SettlementFormProvider } from "./components/SettlementFormProvider";
 import type { Participant } from "./features/settlement/settlement";
 
-type AppScreen = "welcome" | "participants" | "participant-complete";
+type AppScreen = "welcome" | "participants" | "expenses";
 
 export default function App() {
   return (
@@ -20,21 +20,19 @@ function AppContent() {
 
   const handleComplete = (nextParticipants: Participant[]) => {
     setParticipants(nextParticipants);
-    setScreen("participant-complete");
+    setScreen("expenses");
   };
 
-  if (screen === "participant-complete") {
+  if (screen === "expenses") {
     return (
       <main className="app-shell">
-        <section className="welcome-card" aria-labelledby="complete-title">
+        <section className="welcome-card" aria-labelledby="expense-title">
           <p className="eyebrow">참여자 입력 완료</p>
-          <h1 id="complete-title">참여자를 확인했어요</h1>
-          <p className="welcome-copy">총 {participants.length}명이에요.</p>
-          <ul>
-            {participants.map((participant) => (
-              <li key={participant.id}>{participant.name}</li>
-            ))}
-          </ul>
+          <h1 id="expense-title">지출을 입력해 주세요</h1>
+          <p className="welcome-copy">
+            참여자 {participants.length}명이 준비됐어요. 이제 지출을 추가할 수
+            있어요.
+          </p>
         </section>
       </main>
     );
