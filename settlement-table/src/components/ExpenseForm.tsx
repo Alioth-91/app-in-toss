@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { BottomSheet } from "@toss/tds-mobile";
 
 import { createBlankExpenseDraft } from "../features/settlement/createBlankExpense";
 import type { Expense } from "../features/settlement/settlement";
@@ -73,6 +74,15 @@ export function ExpenseForm() {
 
   const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const participantError = errors.expenseDraft?.participantIds;
+  const openAddForm = () => {
+    setFormError("");
+    setIsAdding(true);
+  };
+  const closeAddForm = () => {
+    clearErrors("expenseDraft");
+    setFormError("");
+    setIsAdding(false);
+  };
 
   return (
     <div className="expense-stage">
@@ -104,76 +114,107 @@ export function ExpenseForm() {
       ) : null}
 
       {isAdding ? (
-        <form className="expense-form" onSubmit={handleSubmit(submit)}>
-          {formError ? <p className="form-error" role="alert">{formError}</p> : null}
-
-          <label htmlFor="expense-description">내용 (선택)</label>
-          <input id="expense-description" {...register("expenseDraft.description")} />
-
-          <label htmlFor="expense-amount">금액</label>
-          <input
-            id="expense-amount"
-            type="number"
-            min="1"
-            step="1"
-            inputMode="numeric"
-            aria-invalid={Boolean(errors.expenseDraft?.amount)}
-            {...register("expenseDraft.amount", { valueAsNumber: true })}
-          />
-          {errors.expenseDraft?.amount ? (
-            <p className="field-error">{errors.expenseDraft.amount.message}</p>
-          ) : null}
-
-          <label htmlFor="expense-payer">결제자</label>
-          <select
-            id="expense-payer"
-            aria-invalid={Boolean(errors.expenseDraft?.payerId)}
-            {...register("expenseDraft.payerId")}
+        <BottomSheet
+          open={isAdding}
+          onClose={closeAddForm}
+          hasTextField
+          maxHeight="90vh"
+          expandedMaxHeight="95vh"
+          expandBottomSheet
+          ctaContentGap={80}
+          header={
+            <BottomSheet.Header>
+              <div className="expense-sheet-header">
+                <span>지출 추가</span>
+                <button
+                  className="expense-sheet-close"
+                  type="button"
+                  aria-label="지출 추가 닫기"
+                  onClick={closeAddForm}
+                >
+                  ×
+                </button>
+              </div>
+            </BottomSheet.Header>
+          }
+          cta={
+            <BottomSheet.CTA type="submit" form="expense-form">
+              저장
+            </BottomSheet.CTA>
+          }
+        >
+          <form
+            id="expense-form"
+            className="expense-sheet-form"
+            onSubmit={handleSubmit(submit)}
           >
-            <option value="">결제자를 선택해 주세요</option>
-            {participants.map((participant) => (
-              <option key={participant.id} value={participant.id}>
-                {participant.name}
-              </option>
-            ))}
-          </select>
-          {errors.expenseDraft?.payerId ? (
-            <p className="field-error">{errors.expenseDraft.payerId.message}</p>
-          ) : null}
+            {formError ? (
+              <p className="form-error" role="alert">
+                {formError}
+              </p>
+            ) : null}
 
-          <fieldset>
-            <legend>함께한 참여자</legend>
-            {participants.map((participant) => (
-              <label key={participant.id}>
-                <input
-                  type="checkbox"
-                  value={participant.id}
-                  {...register("expenseDraft.participantIds")}
-                />
-                {participant.name}
-              </label>
-            ))}
-          </fieldset>
-          {participantError ? (
-            <p className="field-error">{participantError.message}</p>
-          ) : null}
+            <label htmlFor="expense-amount">금액 *</label>
+            <input
+              id="expense-amount"
+              type="number"
+              min="1"
+              step="1"
+              inputMode="numeric"
+              aria-invalid={Boolean(errors.expenseDraft?.amount)}
+              {...register("expenseDraft.amount", { valueAsNumber: true })}
+            />
+            {errors.expenseDraft?.amount ? (
+              <p className="field-error">
+                {errors.expenseDraft.amount.message}
+              </p>
+            ) : null}
 
-          <button className="primary-button" type="submit">
-            지출 저장
-          </button>
-          <button
-            className="secondary-button"
-            type="button"
-            onClick={() => {
-              clearErrors("expenseDraft");
-              setFormError("");
-              setIsAdding(false);
-            }}
-          >
-            취소
-          </button>
-        </form>
-      ) : (
+            <label htmlFor="expense-description">지출 내용 (선택)</label>
+            <input
+              id="expense-description"
+              placeholder="예: 흑돼지 저녁"
+              {...register("expenseDraft.description")}
+            />
+
+            <label htmlFor="expense-payer">결제자</label>
+            <select
+              id="expense-payer"
+              aria-invalid={Boolean(errors.expenseDraft?.payerId)}
+              {...register("expenseDraft.payerId")}
+            >
+              <option value="">결제자를 선택해 주세요</option>
+              {participants.map((participant) => (
+                <option key={participant.id} value={participant.id}>
+                  {participant.name}
+                </option>
+              ))}
+            </select>
+            {errors.expenseDraft?.payerId ? (
+              <p className="field-error">
+                {errors.expenseDraft.payerId.message}
+              </p>
+            ) : null}
+
+            <fieldset>
+              <legend>함께한 참여자</legend>
+              {participants.map((participant) => (
+                <label key={participant.id}>
+                  <input
+                    type="checkbox"
+                    value={participant.id}
+                    {...register("expenseDraft.participantIds")}
+                  />
+                  {participant.name}
+                </label>
+              ))}
+            </fieldset>
+            {participantError ? (
+              <p className="field-error">{participantError.message}</p>
+            ) : null}
+          </form>
+        </BottomSheet>
+      ) : expenses.length === 0 ? (
         <section className="expense-empty-state" aria-live="polite">
           <div className="expense-empty-icon" aria-hidden="true">
             ＋
@@ -189,19 +230,19 @@ export function ExpenseForm() {
           <button
             className="expense-empty-cta"
             type="button"
-            onClick={() => setIsAdding(true)}
+            onClick={openAddForm}
           >
             첫 지출 추가하기
           </button>
         </section>
-      )}
+      ) : null}
 
       {!isAdding ? (
         <div className="expense-cta-bar">
           <button
             className="expense-add-cta"
             type="button"
-            onClick={() => setIsAdding(true)}
+            onClick={openAddForm}
           >
             지출 추가
           </button>

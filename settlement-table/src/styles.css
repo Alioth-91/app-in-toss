@@ -1053,3 +1053,101 @@ h1 {
     padding-inline: 16px;
   }
 }
+
+.expense-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.expense-sheet-close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  color: #8a91a0;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.expense-sheet-close:focus-visible {
+  outline: 3px solid rgb(27 100 218 / 35%);
+  outline-offset: 2px;
+}
+
+.expense-sheet-form {
+  display: grid;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+
+.expense-sheet-form > label,
+.expense-sheet-form fieldset legend {
+  color: #3a4252;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.expense-sheet-form > input,
+.expense-sheet-form > select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid #e0e5ec;
+  border-radius: 14px;
+  color: #16181d;
+  background: #ffffff;
+  font-size: 16px;
+}
+
+.expense-sheet-form > input:focus,
+.expense-sheet-form > select:focus {
+  border-color: #1b64da;
+  outline: 2px solid rgb(27 100 218 / 18%);
+}
+
+.expense-sheet-form > input[type="number"] {
+  min-height: 64px;
+  border: 2px solid #1b64da;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.expense-sheet-form > input::placeholder {
+  color: #b6bcc8;
+}
+
+.expense-sheet-form fieldset {
+  display: grid;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.expense-sheet-form fieldset legend {
+  margin-bottom: 2px;
+}
+
+.expense-sheet-form fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #3a4252;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.expense-sheet-form .field-error {
+  margin: -2px 0 2px;
+}
