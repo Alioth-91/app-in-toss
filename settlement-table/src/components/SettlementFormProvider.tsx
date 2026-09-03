@@ -9,6 +9,7 @@ import { createBlankParticipant } from "../features/settlement/createBlankPartic
 import type { Expense, Participant } from "../features/settlement/settlement";
 
 export type SettlementFormValues = {
+  meetingName: string;
   participants: Participant[];
   expenses: Expense[];
   expenseDraft: ExpenseDraft;
@@ -17,6 +18,7 @@ export type SettlementFormValues = {
 export function SettlementFormProvider({ children }: { children: ReactNode }) {
   const form = useForm<SettlementFormValues>({
     defaultValues: {
+      meetingName: "",
       participants: [
         createBlankParticipant(crypto.randomUUID()),
         createBlankParticipant(crypto.randomUUID()),

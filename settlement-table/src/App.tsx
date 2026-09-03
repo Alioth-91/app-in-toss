@@ -19,7 +19,12 @@ function AppContent() {
   const [screen, setScreen] = useState<AppScreen>("home");
 
   if (screen === "setup") {
-    return <SetupScreen onComplete={() => setScreen("expenses")} />;
+    return (
+      <SetupScreen
+        onBack={() => setScreen("home")}
+        onComplete={() => setScreen("expenses")}
+      />
+    );
   }
 
   if (screen === "expenses") {
