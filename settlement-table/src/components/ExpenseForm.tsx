@@ -19,6 +19,7 @@ export function ExpenseForm() {
     setValue,
     formState: { errors },
   } = useFormContext<SettlementFormValues>();
+  const meetingName = useWatch({ control, name: "meetingName" });
   const participants = useWatch({ control, name: "participants" });
   const expenses = useWatch({ control, name: "expenses" });
   const { append } = useFieldArray({ control, name: "expenses" });
@@ -75,15 +76,22 @@ export function ExpenseForm() {
 
   return (
     <div className="expense-stage">
-      <p className="eyebrow">참여자 {participants.length}명</p>
-      <h1 id="expense-title">지출 입력</h1>
-      <p className="welcome-copy">
-        지출을 추가하면 참여자별 부담액을 계산할 수 있어요.
-      </p>
+      <section className="expense-summary-card" aria-labelledby="expense-title">
+        <div className="expense-summary-heading">
+          <h1 id="expense-title">{meetingName || "새 정산"}</h1>
+          <span>참여자 {participants.length}명</span>
+        </div>
+        <div className="expense-summary-total">
+          <div>
+            <span>전체 지출액</span>
+            <strong>{total.toLocaleString()}원</strong>
+          </div>
+          {expenses.length > 0 ? <span>지출 {expenses.length}건</span> : null}
+        </div>
+      </section>
 
       {expenses.length > 0 ? (
         <>
-          <p className="expense-total">현재 총액 {total.toLocaleString()}원</p>
           <ul className="expense-list" aria-label="지출 목록">
             {expenses.map((expense) => (
               <li key={expense.id} className="expense-item">
@@ -93,9 +101,7 @@ export function ExpenseForm() {
             ))}
           </ul>
         </>
-      ) : (
-        <p className="empty-copy">아직 입력한 지출이 없어요.</p>
-      )}
+      ) : null}
 
       {isAdding ? (
         <form className="expense-form" onSubmit={handleSubmit(submit)}>
@@ -168,14 +174,46 @@ export function ExpenseForm() {
           </button>
         </form>
       ) : (
-        <button
-          className="primary-button"
-          type="button"
-          onClick={() => setIsAdding(true)}
-        >
-          지출 추가
-        </button>
+        <section className="expense-empty-state" aria-live="polite">
+          <div className="expense-empty-icon" aria-hidden="true">
+            ＋
+          </div>
+          <div className="expense-empty-copy">
+            <h2>아직 입력한 지출이 없어요</h2>
+            <p>
+              누가 얼마를 결제했는지 한 건씩 추가하면
+              <br />
+              정산 결과를 계산할 수 있어요
+            </p>
+          </div>
+          <button
+            className="expense-empty-cta"
+            type="button"
+            onClick={() => setIsAdding(true)}
+          >
+            첫 지출 추가하기
+          </button>
+        </section>
       )}
+
+      {!isAdding ? (
+        <div className="expense-cta-bar">
+          <button
+            className="expense-add-cta"
+            type="button"
+            onClick={() => setIsAdding(true)}
+          >
+            지출 추가
+          </button>
+          <button
+            className="expense-result-cta"
+            type="button"
+            disabled={expenses.length === 0}
+          >
+            정산 결과 보기
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

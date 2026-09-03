@@ -28,7 +28,7 @@ function AppContent() {
   }
 
   if (screen === "expenses") {
-    return <ExpenseScreen />;
+    return <ExpenseScreen onBack={() => setScreen("setup")} />;
   }
 
   return <HomeScreen onStart={() => setScreen("setup")} />;
